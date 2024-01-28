@@ -1,0 +1,46 @@
+{
+  "productos": [
+    {
+      "id": 1,
+      "tittle": "televisor",
+      "description": "televisor 32 pulgadas",
+      "code": "ABC123",
+      "price": 400000,
+      "status": true,
+      "stock": 10,
+      "category": "electronica",
+      "thumbnails": [
+        "",
+        ""
+      ]
+    },
+    {
+      "id": 2,
+      "tittle": "heladera",
+      "description": "heladera Phillips",
+      "code": "ABC456",
+      "price": 600000,
+      "status": true,
+      "stock": 5,
+      "category": "refrigeracion",
+      "thumbnails": [
+        "",
+        ""
+      ]
+    },
+    {
+      "id": 3,
+      "tittle": "colchon",
+      "description": "colchon 2 plazas",
+      "code": "ABC789",
+      "price": 300000,
+      "status": true,
+      "stock": 15,
+      "category": "colchones y sommiers",
+      "thumbnails": [
+        "",
+        ""
+      ]
+    }
+  ]
+}
