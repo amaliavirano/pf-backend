@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Productos</title>
+</head>
+
+<body>
+  <h1>Lista de Productos</h1>
+  <ul>
+    {{#each products}}
+    <li>
+      ID: {{this.id}}<br>
+      Nombre: {{#if this.product}}{{this.product.title}}{{else}}{{this.title}}{{/if}}<br>
+      Descripción: {{#if this.product}}{{this.product.description}}{{else}}{{this.description}}{{/if}}<br>
+      Categoría: {{#if this.product}}{{this.product.category}}{{else}}{{this.category}}{{/if}}<br>
+      Precio: {{#if this.product}}{{this.product.price}}{{else}}{{this.price}}{{/if}}<br>
+      Imagen: {{#if this.product}}{{this.product.thumbnails}}{{else}}{{this.thumbnails}}{{/if}}<br>
+      <hr>
+    </li>
+    {{/each}}
+  </ul>
+</body>
+
+</html>
