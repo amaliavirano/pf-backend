@@ -1,123 +1,69 @@
 const { Router } = require("express");
-const fs = require("fs");
-const path = require("path");
-const listaProductos = require("../productos.json");
+const {ProductManager} = require("../index");
 
 const router = Router();
+const productManager = new ProductManager('productos.json');
 
-// GET /api/users/
+// GET /api/products/
 router.get(`/`, (req, res) => {
-  return res.json({
-    ok: true,
-    productos: listaProductos.productos,
-  });
+  const allProducts = productManager.getProducts();
+  res.json({ products: allProducts });
 });
 
-// GET /api/users/:userId
-router.get(`/:productoId`, (req, res) => {
-  const productoId = req.params.productoId;
+// GET /api/products/:productId
+router.get(`/:productId`, (req, res) => {
+  const productId = parseInt(req.params.productId);
+  const product = productManager.getProductById(productId);
 
-  if (isNaN(productoId)) {
-    return res.status(400).json({
-      ok: true,
-      message: `No existe un producto con el id ${productoId}`,
-      queryParams: req.query,
-    });
+  if (product) {
+    res.json({ product });
+  } else {
+    res.status(404).json({ error: "Producto no encontrado" });
   }
-
-  const producto = listaProductos.productos.find((p) => p.id === Number(productoId));
-
-  if (!producto) {
-    return res.json({
-      ok: true,
-      message: `No existe un producto con el id ${productoId}`,
-      producto,
-      queryParams: req.query,
-    });
-  }
-
-  return res.json({ ok: true, message: `Producto id: ${productoId}`, producto });
 });
 
 // POST /api/products/
 router.post(`/`, (req, res) => {
-  const producto = req.body;
-  console.log("🚀 ~ router.post ~ producto:", producto);
+  const productData = req.body;
 
-  const lastId = listaProductos.productos[listaProductos.productos.length - 1].id;
-  const newId = lastId + 1;
-
-  const newProducto = {
-    id: newId,
-    ...producto,
-  };
-
-  listaProductos.productos.push(newProducto);
-
-  guardarProductos(listaProductos.productos);
-
-  res.json({ ok: true, message: `Producto creado`, producto: newProducto });
-});
-
-// PUT /api/products/:productsId
-router.put(`/:productoId`, (req, res) => {
-  const productoId = req.params.productoId;
-  const updatedProduct = req.body;
-
-  const index = listaProductos.productos.findIndex((p) => p.id === Number(productoId));
-
-  if (index === -1) {
-    return res.status(404).json({
-      ok: false,
-      message: `No existe un producto con el id ${productoId}`,
-    });
+  if (!productData || Object.keys(productData).length === 0) {
+    return res.status(400).json({ error: 'Se requieren datos del producto en el cuerpo de la solicitud.' });
   }
 
-  listaProductos.productos[index] = {
-    ...listaProductos.productos[index],
-    ...updatedProduct,
-  };
-
-  guardarProductos(listaProductos.productos);
-
-  res.json({
-    ok: true,
-    message: `Producto actualizado con éxito`,
-    producto: listaProductos.productos[index],
-  });
-});
-
-// DELETE /api/products/:productsId
-router.delete(`/:productoId`, (req, res) => {
-  const productoId = req.params.productoId;
-
-  const index = listaProductos.productos.findIndex((p) => p.id === Number(productoId));
-
-  if (index === -1) {
-    return res.status(404).json({
-      ok: false,
-      message: `No existe un producto con el id ${productoId}`,
-    });
+  try {
+    productManager.addProduct(productData);
+    res.json({ success: true, message: 'Producto agregado con éxito' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al agregar el producto' });
   }
-
-  const deletedProduct = listaProductos.productos.splice(index, 1)[0];
-
-  guardarProductos(listaProductos.productos);
-
-  res.json({
-    ok: true,
-    message: `Producto eliminado con éxito`,
-    producto: deletedProduct,
-  });
 });
 
-// Función para guardar la lista de productos en el archivo productos.json
-function guardarProductos(productos) {
-  const filePath = path.join(__dirname, "../productos.json");
+// PUT /api/products/:productId
+router.put(`/:productId`, (req, res) => {
+  const productId = parseInt(req.params.productId);
+  const updatedProductData = req.body;
 
-  const productosJSON = JSON.stringify({ productos }, null, 2);
+  try {
+    productManager.updateProduct(productId, updatedProductData);
+    res.json({ success: true, message: 'Producto actualizado con éxito' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al actualizar el producto' });
+  }
+});
 
-  fs.writeFileSync(filePath, productosJSON, "utf8");
-}
+// DELETE /api/products/:productId
+router.delete(`/:productId`, (req, res) => {
+  const productId = parseInt(req.params.productId);
+
+  try {
+    productManager.deleteProduct(productId);
+    res.json({ success: true, message: 'Producto eliminado con éxito' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al eliminar el producto' });
+  }
+});
 
 module.exports = router;

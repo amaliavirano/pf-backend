@@ -21,4 +21,4 @@ app.use(`/${API_PREFIX}/products`, productsRoutes);
  
 app.listen(PORT, () => {
   console.log(`UP AND RUNNING ON PORT: ${PORT}`);
-});
+}); 

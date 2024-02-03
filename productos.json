@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "product": {
+      "id": 1,
+      "title": "Ejemplo Producto actualizado",
+      "description": "Este es un producto de ejemplo",
+      "code": "ABC123",
+      "price": 29.99,
+      "status": true,
+      "stock": 50,
+      "category": "Electrónicos",
+      "thumbnails": [
+        "https://ejemplo.com/imagen1.jpg",
+        "https://ejemplo.com/imagen2.jpg"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "title": "probando put",
+    "description": "Este es un producto de ejemplo 2",
+    "code": "ABC456",
+    "price": 50,
+    "status": true,
+    "stock": 50,
+    "category": "muebles",
+    "thumbnails": [
+      "https://ejemplo.com/imagen3.jpg",
+      "https://ejemplo.om/imagen4.jpg"
+    ]
+  }
+]
