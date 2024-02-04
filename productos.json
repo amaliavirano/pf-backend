@@ -17,17 +17,19 @@
     }
   },
   {
-    "id": 2,
-    "title": "probando put",
-    "description": "Este es un producto de ejemplo 2",
-    "code": "ABC456",
-    "price": 50,
-    "status": true,
-    "stock": 50,
-    "category": "muebles",
-    "thumbnails": [
-      "https://ejemplo.com/imagen3.jpg",
-      "https://ejemplo.om/imagen4.jpg"
-    ]
+    "id": 3,
+    "product": {
+      "title": "probando post",
+      "description": "Este es un producto de ejemplo 2",
+      "code": "ABC456",
+      "price": 50,
+      "status": true,
+      "stock": 50,
+      "category": "muebles",
+      "thumbnails": [
+        "https://ejemplo.com/imagen3.jpg",
+        "https://ejemplo.om/imagen4.jpg"
+      ]
+    }
   }
 ]

@@ -10,13 +10,7 @@ router.get(`/`, (req, res) => {
   res.json({ products: allProducts });
   
 });
-// GET /api/products/view
 
-router.get(`/view`, (req, res) => {
-  const allProducts = productManager.getProducts();
-  // console.log('All Products:', allProducts);
-   res.render("index", { products: allProducts });
-});
 
 // GET /api/products/:productId
 router.get(`/:productId`, (req, res) => {
