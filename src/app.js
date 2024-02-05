@@ -43,9 +43,26 @@ const productManager = new ProductManager('productos.json');
 
 
 io.on("connection", (socket) => {
-  console.log("Nuevo cliente conectado: ", socket.id)
-
-
- });
-
-
+    console.log("Nuevo cliente conectado: ", socket.id);
+  
+    socket.emit("updateProducts", productManager.getProducts());
+    console.log(productManager)
+  
+   
+    socket.on("productAction", ({ name, action }) => {
+      if (action === "add") {
+          productManager.addProduct({ title: name }); 
+      } else if (action === "delete") {
+          const product = productManager.getProductByName(name);
+  
+          if (product) {
+              productManager.deleteProduct(product.id);
+          } else {
+              console.log("Producto no encontrado");
+          }
+      }
+  });
+  
+  });
+  
+  

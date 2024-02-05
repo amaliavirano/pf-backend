@@ -71,6 +71,10 @@ class ProductManager {
             console.log("Producto no encontrado");
         }
     }
+
+    getProductByName(name) {
+      return this.products.find(product => product.title === name);
+  }
 }
 //CLASE CART MANAGER----------------------------------------------------------------------------------------------
 

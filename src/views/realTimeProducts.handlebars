@@ -14,23 +14,33 @@
 
     <form id="productForm">
       <label for="productName">Nombre del Producto:</label>
-      <input type="text" id="productName" title="productName" required>
+      <input type="text" id="productName" name="productName" required>
 
-      <label for="productAction"></label>
-      <select id="productAction" title="productAction" required>
+      <label for="productAction">Acción:</label>
+      <select id="productAction" name="productAction" required>
         <option value="add">Agregar</option>
         <option value="delete">Eliminar</option>
       </select>
 
-      <input type="submit" value="IR">
+      <input type="submit" value="Enviar">
     </form>
 
-    <div id="productList">
-      <p>Productos disponibles</p>
-    </div>
-
+    <ul id="productList">
+     <h1>Lista de Productos</h1>
+  <ul>
+    {{#each products}}
+    <li>
+      ID: {{this.id}}<br>
+      Nombre: {{#if this.product}}{{this.product.title}}{{else}}{{this.title}}{{/if}}<br>
+      Descripción: {{#if this.product}}{{this.product.description}}{{else}}{{this.description}}{{/if}}<br>
+      Categoría: {{#if this.product}}{{this.product.category}}{{else}}{{this.category}}{{/if}}<br>
+      Precio: {{#if this.product}}{{this.product.price}}{{else}}{{this.price}}{{/if}}<br>
+      Imagen: {{#if this.product}}{{this.product.thumbnails}}{{else}}{{this.thumbnails}}{{/if}}<br>
+      <hr>
+    </li>
+    {{/each}}
+  </ul>
   </div>
-
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/realTimeProducts.js"></script>
