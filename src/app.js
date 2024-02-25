@@ -1,68 +1,99 @@
 const express = require("express");
-const cartsRoutes = require("./routes/carts.routes");
-const productsRoutes = require("./routes/products.routes");
 const handlebars = require("express-handlebars");
-const path = require("path");
-const viewsRoutes = require("./routes/views.routes");
 const { Server } = require("socket.io");
-const {ProductManager} = require("./index");
+const http = require("http");
+const displayRoutes = require("express-routemap");
+const { mongoDBconnection } = require("./db/mongo.config");
+const path = require("path");
+const ViewRoutes = require("./routes/views.routes");
+const ProductManager=require("./dao/managers/ProductManager")
 
-const app = express();
-const PORT = 8800;
 const API_PREFIX = "api";
 
+class App {
+  constructor(routes) {
+    this.app = express();
+    this.port = 8800;
 
-const httpServer = app.listen(PORT, () => {
-  console.log(`Servidor Express en funcionamiento en el puerto: ${PORT}`);
-});
-const io = new Server(httpServer);
+    this.connectToDataBase();
+    this.initilizeMiddlewares();
+    this.initializeRoutes(routes);
+    this.initHandlerbars();
 
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use("/", express.static(path.join(__dirname, "public")));
-
-// Configura handlebars
-app.engine("handlebars", handlebars.engine());
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "handlebars");
-
-// RUTAS DE CARRITOS
-// /api/carts
-app.use(`/${API_PREFIX}/carts`, cartsRoutes);
-
-// RUTAS DE PRODUCTOS
-// /api/products
-app.use(`/${API_PREFIX}/products`, productsRoutes);
-
-// RUTAS DE VISTAS
-app.use("/", viewsRoutes);
-
-const productManager = new ProductManager('productos.json');
+    this.server = http.createServer(this.app);
 
 
-io.on("connection", (socket) => {
-    console.log("Nuevo cliente conectado: ", socket.id);
-  
-    socket.emit("updateProducts", productManager.getProducts());
-    console.log(productManager)
-  
-   
-    socket.on("productAction", ({ name, action }) => {
-      if (action === "add") {
-          productManager.addProduct({ title: name }); 
-      } else if (action === "delete") {
+    const io = new Server(this.server);
+    io.on("connection", (socket) => {
+      console.log("Nuevo cliente conectado: ", socket.id);
+      const productManager = new ProductManager('productos.json');
+
+      socket.emit("updateProducts", productManager.getProducts());
+      console.log(productManager);
+
+      socket.on("productAction", ({ name, action }) => {
+        if (action === "add") {
+          productManager.addProduct({ title: name });
+        } else if (action === "delete") {
           const product = productManager.getProductByName(name);
-  
+
           if (product) {
-              productManager.deleteProduct(product.id);
+            productManager.deleteProduct(product.id);
           } else {
-              console.log("Producto no encontrado");
+            console.log("Producto no encontrado");
           }
+        }
+      });
+    });
+  }
+
+  getServer() {
+    return this.app;
+  }
+
+  closeServer() {
+    this.server = this.app.listen(this.port, () => { });
+  }
+
+  async connectToDataBase() {
+    await mongoDBconnection();
+  }
+
+
+  initializeRoutes(routes) {
+    routes.forEach((route) => {
+      if (route instanceof ViewRoutes) {
+
+        this.app.use(route.router);
+      } else {
+
+        this.app.use(`/${API_PREFIX}`, route.router);
       }
-  });
-  
-  });
-  
-  
+    });
+  }
+
+
+  initilizeMiddlewares() {
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use("/", express.static(path.join(__dirname, "public")));
+  }
+
+  initHandlerbars() {
+    this.app.engine("handlebars", handlebars.engine());
+    this.app.set("views", __dirname + "/views");
+    this.app.set("view engine", "handlebars");
+  }
+
+
+  listen() {
+    this.server.listen(this.port, () => {
+      displayRoutes(this.app);
+      console.log(`=================================`);
+      console.log(`==== PORT: ${this.port}`);
+      console.log(`=================================`);
+    });
+  }
+}
+
+module.exports = App;

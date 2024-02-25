@@ -16,6 +16,8 @@ productForm.addEventListener("submit", (event) => {
   socket.emit("productAction", { name: productName, action: productAction });
 });
 
+
+
 socket.on("updateProducts", (products) => {
   let productHTML = "";
 
@@ -27,7 +29,7 @@ socket.on("updateProducts", (products) => {
         Descripción: ${product.product ? product.product.description : product.description}<br>
         Categoría: ${product.product ? product.product.category : product.category}<br>
         Precio: ${product.product ? product.product.price : product.price}<br>
-        Imagen: ${product.product ? product.product.thumbnails.join(', ') : product.thumbnails}<br>
+        Imagen: ${product.product && product.product.thumbnails ? product.product.thumbnails.join(', ') : 'No disponible'}<br>
         <hr>
       </li>`;
     });

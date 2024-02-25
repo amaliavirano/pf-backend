@@ -26,24 +26,26 @@
     </form>
 
     <ul id="productList">
-     <h1>Lista de Productos</h1>
-  <ul>
-    {{#each products}}
-    <li>
-      ID: {{this.id}}<br>
-      Nombre: {{#if this.product}}{{this.product.title}}{{else}}{{this.title}}{{/if}}<br>
-      Descripción: {{#if this.product}}{{this.product.description}}{{else}}{{this.description}}{{/if}}<br>
-      Categoría: {{#if this.product}}{{this.product.category}}{{else}}{{this.category}}{{/if}}<br>
-      Precio: {{#if this.product}}{{this.product.price}}{{else}}{{this.price}}{{/if}}<br>
-      Imagen: {{#if this.product}}{{this.product.thumbnails}}{{else}}{{this.thumbnails}}{{/if}}<br>
-      <hr>
-    </li>
-    {{/each}}
-  </ul>
+      <h1>Lista de Productos</h1>
+      <ul>
+        {{#each products}}
+        <li>
+          ID: {{this.id}}<br>
+          Nombre: {{#if this.product}}{{this.product.title}}{{else}}{{this.title}}{{/if}}<br>
+          Descripción: {{#if this.product}}{{this.product.description}}{{else}}{{this.description}}{{/if}}<br>
+          Categoría: {{#if this.product}}{{this.product.category}}{{else}}{{this.category}}{{/if}}<br>
+          Precio: {{#if this.product}}{{this.product.price}}{{else}}{{this.price}}{{/if}}<br>
+          Imagen: {{#if this.product}}{{this.product.thumbnails}}{{else}}{{this.thumbnails}}{{/if}}<br>
+          <hr>
+        </li>
+        {{/each}}
+      </ul>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/realTimeProducts.js"></script>
+
+
 </body>
 
 </html>

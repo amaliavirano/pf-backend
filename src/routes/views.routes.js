@@ -1,29 +1,33 @@
 const { Router } = require("express");
-const { ProductManager } = require("../index");
+const ProductManager = require("../dao/managers/ProductManager");
 
-const router = Router();
-const productManager = new ProductManager('productos.json');
+class ViewRoutes {
+  path = "/";
+  router = Router();
+  productManager = new ProductManager('productos.json');
 
+  constructor() {
+    this.initRoutes();
+  }
 
-// GET 
+  initRoutes() {
+    // GET /
+    this.router.get("/", (req, res) => {
+      res.render("index", {});
+    });
 
-router.get("/", (req, res) => {
-    res.render("index", {})
-})
+    
+    // GET /products/
+    this.router.get("/products", (req, res) => {
+      const allProducts = this.productManager.getProducts();
+      res.render("index", { products: allProducts });
+    });
 
-// GET /products/
+    // GET /realtimeproducts
+    this.router.get("/realtimeproducts", (req, res) => {
+      res.render("realTimeProducts", {});
+    });
+  }
+}
 
-router.get(`/products`, (req, res) => {
-    const allProducts = productManager.getProducts();
-    // console.log('All Products:', allProducts);
-    res.render("index", { products: allProducts });
-});
-
-
-router.get(`/realtimeproducts`, (req, res) => {
-    res.render("realTimeProducts", {});
-});
-
-
-module.exports = router;
-
+module.exports = ViewRoutes;
